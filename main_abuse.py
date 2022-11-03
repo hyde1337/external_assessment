@@ -4,10 +4,14 @@ import os
 import requests
 import json
 from datetime import date
+import sys
+
+abuse_api = sys.argv[1]
+destination_srv = sys.argv[2]
 
 headers = {
     'Accept': 'application/json',
-    'Key': '44f23f3aea99c19321acfe7efc13faae8d5a67a2697cf9a02a18f7d2fd20a42797b7df9e154795c4'
+    'Key': abuse_api
 }
 url = 'https://api.abuseipdb.com/api/v2/check'
 mas = masscan.PortScanner()
@@ -73,7 +77,7 @@ def create_csv(results):
 
 
 def scp_forward():
-    os.system('scp scan_result.json scanner@91.201.6.222:~')
+    os.system('scp scan_result.json {}:~'.format(destination_srv))
 
 
 json_cleaning()
