@@ -6,18 +6,23 @@ import json
 from datetime import date
 import sys
 
+# permanent variables settings
 abuse_api = sys.argv[1]
 destination_srv = sys.argv[2]
+ips_list = ['8.8.8.8/32']
 
+# setting up requests
 headers = {
     'Accept': 'application/json',
     'Key': abuse_api
 }
 url = 'https://api.abuseipdb.com/api/v2/check'
 mas = masscan.PortScanner()
-mas.scan('77.242.240.0/20 91.201.4.0/22 188.116.28.0/22', ports='22,23,443,80,5432,3301,3389,3306,9002,5986,8443,27017,139,137,514,111,7077,5601,9300,8080'
+mas.scan(ips_list, ports='22,23,443,80,5432,3301,3389,3306,9002,5986,8443,27017,139,137,514,111,7077,5601,9300,8080'
          , arguments='--max-rate 1000')
 
+
+# cleaning and optimizing JSON
 def json_cleaning():
     scanned = []
     for entry in mas.scan_result['scan']:
@@ -25,10 +30,8 @@ def json_cleaning():
         for proto in mas.scan_result['scan'][entry]:
             for port in mas.scan_result['scan'][entry][proto]:
                 ports.append(port)
-            if entry.startswith('91'):
-                cloud = 'bcloud'
-            else:
-                cloud = 'ccloud'
+            if 1:
+                cloud = 'cloud'
             scanned.append({'ipaddress': entry, 'ports': ports, "cloud": cloud, 'lastRep': str(), 'totalRep': int(), 'badRep': int()})
     print(scanned)
     abuse(scanned)
@@ -52,12 +55,14 @@ def abuse(scanned):
     create_csv(scanned)
 
 
+# write JSON locally
 def create_json(results):
     with open('scan_result_test.json', 'w') as outfile:
         for i in results:
             outfile.write(str(i).replace('\'', '\"') + '\n')
 
 
+# creates backup CSV
 def create_csv(results):
     today = date.today()
     ips = []
