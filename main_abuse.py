@@ -8,6 +8,7 @@ import sys
 
 # permanent variables settings
 abuse_api = sys.argv[1]
+# format root@192.168.1.1
 destination_srv = sys.argv[2]
 ips_list = ['8.8.8.8/32']
 
