@@ -1,0 +1,7 @@
+masscan = *
+pandas = *
+os = *
+requests = *
+json = *
+datetime = *
+sys = *
